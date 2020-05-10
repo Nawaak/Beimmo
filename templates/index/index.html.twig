@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Homepage {% endblock %}
+
+{% block body %}
+    {% set form_submit = form.q.vars.submitted or form.min.vars.submitted or form.max.vars.submitted or form.room.vars.submitted %}
+    {% set query = app.request.get('q') %}
+
+    <h2 class="text-center mt-3 text-uppercase p-0">Les annonces stars</h2>
+
+    {% include 'partials/_carousel.html.twig' %}
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-3 pr-0">
+                <div class="pl-3">
+                    <h5 class="mb-3"> Filtrer les biens :</h5>
+                    <div class="form-group">
+                        {{ form_start(form) }}
+                        <div class="input-group mb-3">
+                            {{ form_widget(form.q)}}
+                            <div class="input-group-append">
+                                <button type="submit" class="input-group-text fa fa-send" id="basic-addon1"></button>
+                            </div>
+                            {{ form_errors(form.q,{attr: {class: 'alert alert-danger'}}) }}
+                        </div>
+                        <div class="input-group mb-3">
+                            <p>Prix :</p>
+                            <div class="row">
+                                <div class="col">
+                                    {{ form_widget(form.min)}}
+                                    {{ form_errors(form.min,{attr: {class: 'alert alert-danger'}}) }}
+                                </div>
+                                <div class="col pl-0">
+                                    {{ form_widget(form.max)}}
+                                    {{ form_errors(form.max,{attr: {class: 'alert alert-danger'}}) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <p>Nb de pièces :</p>
+                            {{ form_widget(form.room) }}
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Valider</button>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md">
+                {% if property is not empty %}
+                    {% if form_submit %}
+                        <p class="mb-1">   {{ property | length }} résultat{{ property | length > 1 ? 's' : '' }}, pour votre recherche </p>
+                    {% endif %}
+                    {% for p in property %}
+                    <div class="row">
+                        <div class="col-md">
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    {{ p.title }}
+                                    <span class="float-right">Mis en ligne le : {{ p.createdAt|date('d M Y') }}</span>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="row">
+                                        <div class="col-md-3 pr-0">
+                                            <img src="{{ p.coverimg }}" alt="" class="w-100 h-100">
+                                        </div>
+                                        <div class="col p-0">
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{ p.title }}</h5>
+                                                <p class="card-text">{{ p.description | slice('0','120') }}.... </p>
+                                                <p> Nombre de piéces : {{ p.room }}</p>
+                                                <p> Prix : <b>{{ p.price | number_format('0',' ', ',') }} €</b></p>
+                                                <a href="#" class="btn btn-primary">En savoir + </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <h3 class="text-center"> Aucun résultat{{ query ? ': ' : '' }} {{ query ? query : '' }}</h3>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

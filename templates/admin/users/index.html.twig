@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container mt-4">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }}" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        <small><a href="{{ path('admin_index') }}"><i> > Revenir en arriere</i></a></small>
+        <h2> Gerer les Utilisateurs </h2>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Email</th>
+                <th>Roles</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for u in user %}
+                <tr>
+                    <th>{{ u.id }}</th>
+                    <th>{{ u.email }}</th>
+                    <th>
+                        {% for key in u.roles %}
+                            {% if loop.length > 1 %}
+                                {{ (loop.last) ? ',' : '' }} {{ key }}
+                            {% else %}
+                                {{ key }}
+                            {% endif %}
+                        {% endfor %}
+                    </th>
+                    <th>
+                        <i class="fa fa-trash"></i>
+                        <a href="{{ path('admin_users_edit', {user: u.id}) }}"><i class="fa fa-edit"></i></a>
+                    </th>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        $(".alert").fadeTo(1800,0).slideUp(1500, function(){
+            $(this).remove();
+        })
+    </script>
+{% endblock %}

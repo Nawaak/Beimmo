@@ -1,0 +1,22 @@
+@font-face {
+    font-family: "RobotoCondensed-Light";
+    src: url("/font/RobotoCondensed-Regular.ttf");
+}
+
+body{
+    font-family: "RobotoCondensed-Light", Monospaced ,SansSerif;
+}
+
+a.nav-link{
+    color: #ffffff !important;
+}
+
+
+a.nav-link:hover{
+    color: #bebeaf !important;
+    transition: .5s;
+}
+
+table th{
+    vertical-align: middle !important;
+}

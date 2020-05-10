@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h2> Editer </h2>
+        <hr>
+        {{ form_start(form) }}
+        <div class="row">
+            <div class="col">
+                {{ form_row(form.title)}}
+            </div>
+            <div class="col">
+                {{ form_row(form.coverimg)}}
+            </div>
+            <div class="col">
+                {{ form_row(form.price, {attr: {value: form.price.vars.value | number_format('0', ' ', ',')}})}}
+            </div>
+        </div>
+        {{ form_rest(form) }}
+        <button type="submit" class="float-right btn btn-primary">Envoyer</button>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

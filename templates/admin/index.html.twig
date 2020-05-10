@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h2>Dashboard</h2>
+        <hr>
+        <div class="row">
+            <div class="col">
+                <div class="alert alert-info text-center">
+                    <a href="{{ path('admin_property_index') }}" class="text-dark"><i class="fa fa-book"></i> Gerer les annonces ({{ p }}) </a>
+                </div>
+            </div>
+            <div class="col">
+                <div class="alert alert-warning text-center">
+                    <a href="{{ path('admin_users_index') }}" class="text-dark"><i class="fa fa-user"></i> Gerer les utilisateurs ({{ u }})</a>
+                </div>
+            </div>
+            <div class="col">
+                <div class="alert alert-dark text-center">Gerer les annonces</div>
+            </div>
+            <div class="col">
+                <div class="alert alert-dark text-center">Gerer les annonces</div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

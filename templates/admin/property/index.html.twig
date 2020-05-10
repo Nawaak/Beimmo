@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container mt-4">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }}" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        <small><a href="{{ path('admin_index') }}"><i> > Revenir en arriere</i></a></small>
+        <h2> Gerer les biens </h2>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Titre</th>
+                <th>CoverImage</th>
+                <th>Introduction</th>
+                <th>Description</th>
+                <th>Prix</th>
+                <th>Pieces</th>
+                <th>CreatedAt</th>
+                <th>UpdatedAt</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for p in property %}
+            <tr>
+                <th>{{ p.id }}</th>
+                <th>{{ p.title }}</th>
+                <th class="text-center"><img src="{{ p.coverimg }}" alt="" class="mx-auto" style="border-radius: 99%;-webkit-border-radius: 99%;max-width: 40px;height: 40px;"></th>
+                <th>{{ p.description | slice(0,50) }}...</th>
+                <th>{{ p.content | slice(0,65) }}...</th>
+                <th>{{ p.price | number_format('0',' ', ',') }}€</th>
+                <th>{{ p.room }}</th>
+                <th>{{ p.createdAt | date('d.m.Y') }}</th>
+                <th>{{ p.updatedAt ? p.updatedAt | date('d.m.Y') : 'null' }}</th>
+                <th>
+                    <a href="{{ path('admin_property_delete', {property: p.id}) }}"><i class="fa fa-trash"></i></a>
+                    <a href="{{ path('admin_property_edit', {property: p.id}) }}"><i class="fa fa-edit"></i></a>
+                </th>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">
+    $(".alert").fadeTo(1800,0).slideUp(1500, function(){
+        $(this).remove();
+    })
+</script>
+{% endblock %}
