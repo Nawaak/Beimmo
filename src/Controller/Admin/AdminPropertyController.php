@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Property;
 use App\Form\PropertyType;
 use App\Repository\PropertyRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,24 +31,32 @@ class AdminPropertyController extends AbstractController
     }
 
     /**
-     * @route("/edit/{property}",name="edit")
+     * @route("/edit/{slug<[a-z\-]+>}-{id<\d+>}",name="edit")
      * @param Property $property
      * @param Request $request
      * @param EntityManagerInterface $manager
+     * @param string $slug
      * @return Response
      */
-    public function edit(Property $property, Request $request, EntityManagerInterface $manager): Response{
+    public function edit(Property $property, Request $request, EntityManagerInterface $manager, string $slug): Response
+    {
 
-        $form = $this->createForm(PropertyType::class,$property);
+        if ($property->getSlug() != $slug) {
+            return $this->redirectToRoute('admin_property_edit', [
+                'slug' => $property->getSlug(),
+                'id' => $property->getId()
+            ], 301);
+        }
+        $form = $this->createForm(PropertyType::class, $property);
         $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()){
-            $property->setUpdatedAt(new \DateTime());
+        if ($form->isSubmitted() && $form->isValid()) {
+            $property->setUpdatedAt(new DateTime());
             $manager->persist($property);
             $manager->flush();
-            $this->addFlash('success','Le bien a bien été modifié');
-            return $this->redirectToRoute('admin_property');
+            $this->addFlash('success', 'Le bien a bien été modifié');
+            return $this->redirectToRoute('admin_property_index');
         }
-        return $this->render('admin/property/edit.html.twig',[
+        return $this->render('admin/property/edit.html.twig', [
             'property' => $property,
             'form' => $form->createView()
         ]);

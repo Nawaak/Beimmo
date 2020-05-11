@@ -10,7 +10,6 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @method Property|null find($id, $lockMode = null, $lockVersion = null)
  * @method Property|null findOneBy(array $criteria, array $orderBy = null)
- * @method Property[]    findAll()
  * @method Property[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class PropertyRepository extends ServiceEntityRepository
@@ -75,15 +74,20 @@ class PropertyRepository extends ServiceEntityRepository
         return $query->getQuery()->getResult();
     }
 
-    public function getCount(SearchData $searchData){
-        count($this->findSearch($searchData));
+    public function findAll()
+    {
+        return $this->createQueryBuilder('t')
+            ->where('t.online = 1')
+            ->orderBy('t.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
     }
 
     public function findAllDesc()
     {
         return $this->createQueryBuilder('t')
-                    ->orderBy('t.id' , 'DESC')
-                    ->getQuery()
-                    ->getResult();
+            ->orderBy('t.id', 'DESC')
+            ->getQuery()
+            ->getResult();
     }
 }

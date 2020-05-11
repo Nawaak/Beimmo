@@ -3,10 +3,13 @@
 namespace App\Entity;
 
 use App\Repository\PropertyRepository;
+use Cocur\Slugify\Slugify;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=PropertyRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  */
 class Property
 {
@@ -56,6 +59,27 @@ class Property
      * @ORM\Column(type="datetime",nullable=true)
      */
     private $updatedAt;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $slug;
+
+    /**
+     * @ORM\Column(type="boolean", options={"default" : 1})
+     */
+    private $online = 1;
+
+    /**
+     * @return string
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate()
+     */
+    public function autoSlug(): string
+    {
+        $slugify = new Slugify();
+        return $this->slug = $slugify->slugify($this->getTitle());
+    }
 
     public function getId(): ?int
     {
@@ -134,26 +158,50 @@ class Property
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    public function setCreatedAt(DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
+    public function setUpdatedAt(DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getOnline(): ?bool
+    {
+        return $this->online;
+    }
+
+    public function setOnline(bool $online): self
+    {
+        $this->online = $online;
 
         return $this;
     }

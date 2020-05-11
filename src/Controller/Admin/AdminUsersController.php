@@ -20,14 +20,23 @@ use Symfony\Component\Routing\Annotation\Route;
 class AdminUsersController extends AbstractController
 {
     /**
+     * @var EntityManagerInterface
+     */
+    private $em;
+
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
+    /**
      * @Route("/", name="index")
      * @param UserRepository $user
      * @return Response
      */
     public function index(UserRepository $user)
     {
-
-        return $this->render('admin/users/index.html.twig',[
+        return $this->render('admin/users/index.html.twig', [
             'user' => $user->findAll()
         ]);
     }
@@ -35,11 +44,10 @@ class AdminUsersController extends AbstractController
     /**
      * @param User $user
      * @param Request $request
-     * @param EntityManagerInterface $em
      * @return RedirectResponse|Response
      * @Route("/edit/{user}", name="edit")
      */
-    public function edit(User $user, Request $request, EntityManagerInterface $em)
+    public function edit(User $user, Request $request)
     {
 
         $form = $this->createForm(AdminUserType::class, $user);
@@ -48,13 +56,26 @@ class AdminUsersController extends AbstractController
         $pass = $this->getUser()->getPassword();
         if ($form->isSubmitted() && $form->isValid() && $password == $pass or $password != $pass) {
             $user->setPassword($pass);
-            $em->persist($user);
-            $em->flush();
+            $this->em->persist($user);
+            $this->em->flush();
             $this->addFlash('success', 'L\'utilisateur a bien été modifié');
             return $this->redirectToRoute('admin_users_index');
         }
         return $this->render('admin/users/edit.html.twig', [
             'form' => $form->createView()
         ]);
+    }
+
+    /**
+     * @param User $user
+     * @route("/delete/{user<\d+>}", name="delete")
+     * @return Response
+     */
+    public function delete(User $user)
+    {
+        $this->em->remove($user);
+        $this->em->flush();
+        $this->addFlash('success', 'L\'utilisateur ' . $user->getEmail() . ' a bien été supprimé');
+        return $this->redirectToRoute('admin_users_index');
     }
 }
