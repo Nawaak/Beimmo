@@ -10,6 +10,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AdminUserType extends AbstractType
 {
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -20,9 +21,13 @@ class AdminUserType extends AbstractType
                     'User' => 'ROLE_USER'
                 ],
                 'multiple' => true,
-                'expanded' => true, // render check-boxes
+                'expanded' => true, // checkbox
             ])
-            ->add('password')
+            ->add('password', null, [
+                'attr' => [
+                    'disabled' => true
+                ]
+            ])
         ;
     }
 

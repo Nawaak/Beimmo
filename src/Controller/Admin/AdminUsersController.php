@@ -39,17 +39,21 @@ class AdminUsersController extends AbstractController
      * @return RedirectResponse|Response
      * @Route("/edit/{user}", name="edit")
      */
-    public function edit(User $user, Request $request, EntityManagerInterface $em){
+    public function edit(User $user, Request $request, EntityManagerInterface $em)
+    {
 
-        $form = $this->createForm(AdminUserType::class,$user);
+        $form = $this->createForm(AdminUserType::class, $user);
         $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()){
+        $password = $form->get('password')->getData();
+        $pass = $this->getUser()->getPassword();
+        if ($form->isSubmitted() && $form->isValid() && $password == $pass or $password != $pass) {
+            $user->setPassword($pass);
             $em->persist($user);
             $em->flush();
-            $this->addFlash('success','User modifié');
+            $this->addFlash('success', 'L\'utilisateur a bien été modifié');
             return $this->redirectToRoute('admin_users_index');
         }
-        return $this->render('admin/users/edit.html.twig',[
+        return $this->render('admin/users/edit.html.twig', [
             'form' => $form->createView()
         ]);
     }

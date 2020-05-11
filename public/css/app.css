@@ -1,11 +1,3 @@
-@font-face {
-    font-family: "RobotoCondensed-Light";
-    src: url("/font/RobotoCondensed-Regular.ttf");
-}
-
-body{
-    font-family: "RobotoCondensed-Light", Monospaced ,SansSerif;
-}
 
 a.nav-link{
     color: #ffffff !important;
