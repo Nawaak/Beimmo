@@ -1,10 +1,36 @@
+th {
+    font-weight: 400;
+}
 
-a.nav-link{
+thead th {
+    text-align: center;
+}
+
+tbody tr {
+    text-align: center;
+}
+
+tbody td {
+    vertical-align: middle !important;
+}
+
+tbody td > img.coverimg {
+    border-radius: 45px;
+    max-width: 45px;
+    height: 45px;
+}
+
+table a > i {
+    color: #222222;
+    padding-right: 6px;
+}
+
+a.nav-link {
     color: #ffffff !important;
 }
 
 
-a.nav-link:hover{
+a.nav-link:hover {
     color: #bebeaf !important;
     transition: .5s;
 }

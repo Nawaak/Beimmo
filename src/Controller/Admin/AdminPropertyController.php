@@ -49,7 +49,9 @@ class AdminPropertyController extends AbstractController
         }
         $form = $this->createForm(PropertyType::class, $property);
         $form->handleRequest($request);
+        $online = $form->get('online')->getData();
         if ($form->isSubmitted() && $form->isValid()) {
+            $property->setOnline($online);
             $property->setUpdatedAt(new DateTime());
             $manager->persist($property);
             $manager->flush();
@@ -72,6 +74,6 @@ class AdminPropertyController extends AbstractController
         $manager->remove($property);
         $manager->flush();
         $this->addFlash('success','Le bien a bien été supprimé');
-        return $this->redirectToRoute('admin_property');
+        return $this->redirectToRoute('admin_property_index');
     }
 }

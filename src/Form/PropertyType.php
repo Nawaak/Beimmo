@@ -4,7 +4,7 @@ namespace App\Form;
 
 use App\Entity\Property;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -34,16 +34,10 @@ class PropertyType extends AbstractType
             ->add('room', null, [
                 'label' => 'Pieces'
             ])
-            ->add('online', ChoiceType::class, [
-                'label' => 'En ligne?',
-                'placeholder' => false,
-                'multiple' => false,
-                'expanded' => true,
+            ->add('online', CheckboxType::class, [
+                'label_attr' => ['class' => 'switch-custom'],
                 'required' => false,
-                'choices' => [
-                    'En ligne' => 1,
-                    'Hors ligne' => 0
-                ]
+                'label' => 'En ligne?'
             ])
         ;
     }

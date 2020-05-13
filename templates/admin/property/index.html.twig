@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="container mt-4">
+    <div class="container-fluid mt-4">
         {% for label, messages in app.flashes %}
             {% for message in messages %}
                 <div class="alert alert-{{ label }}" role="alert">
@@ -18,47 +18,89 @@
             <tr>
                 <th>ID</th>
                 <th>Titre</th>
-                <th>CoverImage</th>
+                <th>Cover</th>
                 <th>Introduction</th>
                 <th>Description</th>
                 <th>Prix</th>
                 <th>Pieces</th>
                 <th>Online</th>
-                <th>CreatedAt</th>
-                <th>UpdatedAt</th>
+                <th>Creer le</th>
+                <th>Modifié le</th>
                 <th>Action</th>
             </tr>
             </thead>
             <tbody>
             {% for p in property %}
-                <tr>
-                    <th>{{ p.id }}</th>
-                    <th>{{ p.title }}</th>
-                    <th class="text-center"><img src="{{ p.coverimg }}" alt="" class="mx-auto"
-                                                 style="border-radius: 99%;-webkit-border-radius: 99%;max-width: 40px;height: 40px;">
-                    </th>
-                    <th>{{ p.description | slice(0,50) }}...</th>
-                    <th>{{ p.content | slice(0,65) }}...</th>
-                    <th>{{ p.price | number_format('0',' ', ',') }}€</th>
-                    <th>{{ p.room }}</th>
-                    <th>{% if p.online == 1 %} En ligne {% else %} Hors Ligne {% endif %}</th>
-                    <th>{{ p.createdAt | date('d.m.Y') }}</th>
-                    <th>{{ p.updatedAt ? p.updatedAt | date('d.m.Y') : 'null' }}</th>
-                    <th>
-                        <a href="{{ path('admin_property_delete', {property: p.id}) }}"><i class="fa fa-trash"></i></a>
+                <tr id="tt">
+                    <td>{{ p.id }}</td>
+                    <td>{{ p.title }}</td>
+                    <td>
+                        <img src="{{ p.coverimg }}" alt="" class="mx-auto coverimg">
+                    </td>
+                    <td>{{ p.description | slice(0,50) }}...</td>
+                    <td>{{ p.content | slice(0,65) }}...</td>
+                    <td>{{ p.price | number_format('0',' ', ',') }}€</td>
+                    <td>{{ p.room }}</td>
+                    <td>{% if p.online == 1 %}
+                            <div style="height: 15px; width: 15px; border-radius: 15px; background-color:var(--success); margin: 0 auto;"></div>
+                        {% else %}
+                            <div style="height: 15px; width: 15px; border-radius: 15px; background-color: var(--danger); margin: 0 auto;"></div>
+                        {% endif %}
+                    </td>
+                    <td>{{ p.createdAt | date('d.m.Y') }}</td>
+                    <td>{{ p.updatedAt ? p.updatedAt | date('d.m.Y') : 'null' }}</td>
+                    <td>
+                        <a href="{{ path('admin_property_delete', {property: p.id}) }}" id="js-modal"
+                           data-toggle="modal" data-target="#exampleModal"><i class="fa fa-trash"></i></a>
                         <a href="{{ path('admin_property_edit', {slug: p.slug, id: p.id}) }}"><i class="fa fa-edit"></i></a>
-                    </th>
+                    </td>
                 </tr>
+                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Avertissement</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Êtes vous sur de vouloir supprimer?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+                                <a class="btn btn-primary" id="yes"
+                                   data-remove-url="{{ path('admin_property_delete', {property: p.id}) }}">Oui</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             {% endfor %}
             </tbody>
         </table>
     </div>
+
 {% endblock %}
 
 {% block javascripts %}
-<script type="text/javascript">
-    $(".alert").fadeTo(1800,0).slideUp(1500, function(){
-        $(this).remove();
-    })
-</script>
+    <script type="text/javascript">
+        $(".alert").fadeTo(3000, 0).slideUp(1200, function () {
+            $(this).remove();
+        })
+
+        $('a#yes').on('click', function () {
+            let url = $(this).attr('data-remove-url');
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: {},
+                success: function (data) {
+                    $("exampleModal").modal('hide');
+                    $("body").html(data);
+                }
+            });
+        });
+
+    </script>
 {% endblock %}
