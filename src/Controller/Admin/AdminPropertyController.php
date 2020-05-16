@@ -8,9 +8,11 @@ use App\Repository\PropertyRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Constraints\Json;
 
 /**
  * @Route("/admin/property", name="admin_property_")
@@ -67,13 +69,23 @@ class AdminPropertyController extends AbstractController
     /**
      * @param Property $property
      * @param EntityManagerInterface $manager
-     * @return Response
+     * @return JsonResponse
      * @Route("/delete/{property}", name="delete")
      */
-    public function delete(Property $property, EntityManagerInterface $manager): Response{
-        $manager->remove($property);
-        $manager->flush();
-        $this->addFlash('success','Le bien a bien été supprimé');
-        return $this->redirectToRoute('admin_property_index');
+    public function delete(Property $property, EntityManagerInterface $manager): JsonResponse
+    {
+
+        if ($property) {
+            $manager->remove($property);
+            $manager->flush();
+            return $this->json([
+                'code' => '200',
+                'redirect' => $this->generateUrl('admin_property_index'),
+                'property' => $property->getId()
+            ], 200);
+        }
+        throw $this->createNotFoundException('Suppression impossible.');
+
+
     }
 }

@@ -2,15 +2,7 @@
 
 {% block body %}
     <div class="container-fluid mt-4">
-        {% for label, messages in app.flashes %}
-            {% for message in messages %}
-                <div class="alert alert-{{ label }}" role="alert">
-                    {{ message }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                                aria-hidden="true">&times;</span></button>
-                </div>
-            {% endfor %}
-        {% endfor %}
+        <div id="message" style="display: none;"></div>
         <small><a href="{{ path('admin_index') }}"><i> < Revenir en arriere</i></a></small>
         <h2> Gerer les biens </h2>
         <table class="table table-striped">
@@ -31,7 +23,7 @@
             </thead>
             <tbody>
             {% for p in property %}
-                <tr id="tt">
+                <tr>
                     <td>{{ p.id }}</td>
                     <td>{{ p.title }}</td>
                     <td>
@@ -50,32 +42,12 @@
                     <td>{{ p.createdAt | date('d.m.Y') }}</td>
                     <td>{{ p.updatedAt ? p.updatedAt | date('d.m.Y') : 'null' }}</td>
                     <td>
-                        <a href="{{ path('admin_property_delete', {property: p.id}) }}" id="js-modal"
-                           data-toggle="modal" data-target="#exampleModal"><i class="fa fa-trash"></i></a>
+                        <a href="{{ path('admin_property_delete', {property: p.id}) }}" class="js-delete"><i
+                                    class="fa fa-trash"></i></a>
                         <a href="{{ path('admin_property_edit', {slug: p.slug, id: p.id}) }}"><i class="fa fa-edit"></i></a>
                     </td>
                 </tr>
-                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
-                     aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Avertissement</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <p>Êtes vous sur de vouloir supprimer?</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
-                                <a class="btn btn-primary" id="yes"
-                                   data-remove-url="{{ path('admin_property_delete', {property: p.id}) }}">Oui</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {% include 'partials/_modal.html.twig' %}
             {% endfor %}
             </tbody>
         </table>
@@ -84,22 +56,35 @@
 {% endblock %}
 
 {% block javascripts %}
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/js/notify.min.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/js/overhang.min.js"></script>
     <script type="text/javascript">
         $(".alert").fadeTo(3000, 0).slideUp(1200, function () {
             $(this).remove();
         })
 
-        $('a#yes').on('click', function () {
-            let url = $(this).attr('data-remove-url');
-            $.ajax({
-                type: "POST",
-                url: url,
-                data: {},
-                success: function (data) {
-                    $("exampleModal").modal('hide');
-                    $("body").html(data);
-                }
-            });
+        $("a.js-delete").on('click', function (e) {
+            $("#exampleModal").modal('show', function () {
+                $("a.yes").on('click', function () {
+                    e.preventDefault()
+                    const url = $(this).attr('href')
+                    const ele = $(this).parent().parent()
+                    axios.post(url).then(function (response) {
+
+                        if (response.data.code === "200") {
+                            console.log(response)
+                            ele.fadeTo(700, 0).slideUp(500, function () {
+                                $(this).remove()
+                            })
+                            $("body").overhang({type: "success", message: "OK"})
+                        } else {
+                            alert('Suppression impossible')
+                        }
+                    });
+                })
+            })
         });
 
     </script>
