@@ -11,8 +11,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Constraints\Json;
 
 /**
  * @Route("/admin/property", name="admin_property_")
@@ -24,10 +24,11 @@ class AdminPropertyController extends AbstractController
      * @param PropertyRepository $repo
      * @return Response
      */
-    public function property(PropertyRepository $repo){
+    public function property(PropertyRepository $repo): Response
+    {
 
         $property = $repo->findAllDesc();
-        return $this->render('admin/property/index.html.twig',[
+        return $this->render('admin/property/index.html.twig', [
             'property' => $property
         ]);
     }
@@ -74,18 +75,11 @@ class AdminPropertyController extends AbstractController
      */
     public function delete(Property $property, EntityManagerInterface $manager): JsonResponse
     {
-
-        if ($property) {
-            $manager->remove($property);
-            $manager->flush();
-            return $this->json([
-                'code' => '200',
-                'redirect' => $this->generateUrl('admin_property_index'),
-                'property' => $property->getId()
-            ], 200);
-        }
-        throw $this->createNotFoundException('Suppression impossible.');
-
-
+        $manager->remove($property);
+        $manager->flush();
+        return $this->json([
+            'code' => '200',
+            'message' => "Le bien a bien été supprimé"
+        ], 200);
     }
 }
