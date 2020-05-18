@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profile - {{ app.user.email }}{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col">
+                <h2 class="text-center">Mes annonces</h2>
+                <div class="alert alert-success text-center">
+                    <a href="{{ path('users_properties') }}" class="text-dark"><i class="fa fa-book"></i> Voir mes
+                        annonces ({{ user[0].properties | length }})</a>
+                </div>
+            </div>
+            <div class="col"></div>
+            <div class="col"></div>
+        </div>
+    </div>
+{% endblock %}
