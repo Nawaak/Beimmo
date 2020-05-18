@@ -2,15 +2,7 @@
 
 {% block body %}
     <div class="container-fluid mt-4">
-        {% for label, messages in app.flashes %}
-            {% for message in messages %}
-                <div class="alert alert-{{ label }}" role="alert">
-                    {{ message }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                                aria-hidden="true">&times;</span></button>
-                </div>
-            {% endfor %}
-        {% endfor %}
+        {% include 'partials/_alert.html.twig' %}
         <small><a href="{{ path('admin_index') }}"><i> < Revenir en arriere</i></a></small>
         <h2> Gerer les Utilisateurs </h2>
         <table class="table table-striped">

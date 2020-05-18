@@ -4,8 +4,6 @@
     <div class="container-fluid mt-4">
         <small><a href="{{ path('admin_index') }}"><i> < Revenir en arriere</i></a></small>
         <h2> Gerer les biens </h2>
-        <span class="image"
-              style="display: none; position: absolute; top: 25px; left: 25px; background-color: green; padding: 15px;">LOADING</span>
 
         <table class="table table-striped">
             <thead>
@@ -34,7 +32,7 @@
                     <td>{{ p.description | slice(0,50) }}...</td>
                     <td>{{ p.content | slice(0,65) }}...</td>
                     <td>{{ p.price | number_format('0',' ', ',') }}€</td>
-                    <td>{{ p.room }}</td>
+                    <td class="text-center">{{ p.room }}</td>
                     <td>{% if p.online == 1 %}
                             <div style="height: 15px; width: 15px; border-radius: 15px; background-color:var(--success); margin: 0 auto;"></div>
                         {% else %}
@@ -42,10 +40,9 @@
                         {% endif %}
                     </td>
                     <td>{{ p.createdAt | date('d.m.Y') }}</td>
-                    <td>{{ p.updatedAt ? p.updatedAt | date('d.m.Y') : 'null' }}</td>
+                    <td>{{ p.updatedAt ? p.updatedAt | date('d.m.Y') : '' }}</td>
                     <td>
-                        <a href="{{ path('admin_property_delete', {property: p.id}) }}" class="js-delete"
-                           data-toggle='confirmation' id="important_action"><i
+                        <a href="{{ path('admin_property_delete', {property: p.id}) }}" class="js-delete"><i
                                     class="fa fa-trash"></i></a>
                         <a href="{{ path('admin_property_edit', {slug: p.slug, id: p.id}) }}"><i class="fa fa-edit"></i></a>
                     </td>
@@ -61,9 +58,6 @@
 {% block javascripts %}
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="/js/notify.min.js"></script>
-    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="/js/overhang.min.js"></script>
-    <script type="text/javascript" src="/js/jquery.popconfirm.js"></script>
 
     <script type="text/javascript">
         $(".alert").fadeTo(3000, 0).slideUp(1200, function () {
@@ -96,7 +90,5 @@
                 })
             })
         })
-
-
     </script>
 {% endblock %}

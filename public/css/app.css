@@ -2,11 +2,7 @@ th {
     font-weight: 400;
 }
 
-thead th {
-    text-align: center;
-}
-
-tbody tr {
+thead th, tr {
     text-align: center;
 }
 
