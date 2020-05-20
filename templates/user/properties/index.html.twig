@@ -4,43 +4,77 @@
 
 {% block body %}
     <div class="container mt-4">
-        {% include 'partials/_alert.html.twig' %}
 
-        <h2>Mes annonces</h2>
-        <hr>
-        {% for p in property %}
-            <div class="row">
-                <div class="col">
-                    <div class="row">
-                        <div class="col-md">
-                            <div class="card mb-3">
-                                <div class="card-header">
-                                    {{ p.title }}
-                                    <span class="float-right">Mis en ligne le : {{ p.createdAt|date('d M Y') }}</span>
+        {% include 'partials/_alert.html.twig' %}
+        <div class="md-form mt-0">
+            <label for="search"> Rechercher </label>
+            <input class="form-control" type="text" name="search" placeholder="N° Réference..." aria-label="search">
+        </div>
+        <div class="row">
+            <div class="col-md-7">
+                <h2>Mes annonces en ligne </h2>
+                <hr>
+                {% if property is empty %}
+                    <p>Aucune annonce en ligne</p>
+                {% else %}
+                    {% for p in property %}
+                        <div class="card mb-2">
+                            <div class="card-header">
+                                <div class="card-title border-bottom">
+                                    <h5 class="float-left"> {{ p.title }} </h5>
+                                    <i style="line-height: 26px;">(N° : {{ p.reference }})</i>
+                                    <span class="float-right">Mise en ligne le : {{ p.createdAt | date('d M Y') }}</span>
+                                    <div class="clearfix"></div>
                                 </div>
-                                <div class="card-body p-0">
-                                    <div class="row">
-                                        <div class="col-md-3 pr-0">
-                                            <img src="{{ p.coverimg }}" alt="" class="w-100 h-100">
-                                        </div>
-                                        <div class="col p-0">
-                                            <div class="card-body">
-                                                <h5 class="card-title">{{ p.title }}</h5>
-                                                <p class="card-text">{{ p.description | slice('0','250') }}.... </p>
-                                                <p> Nombre de piéces : {{ p.room }}</p>
-                                                <p> Prix : <b>{{ p.price | number_format('0',' ', ',') }} €</b></p>
-                                                <a href="#" class="btn btn-info">Voir</a>
-                                                <a href="{{ path('users_properties_edit',{slug: p.slug, property: p.id}) }}"
-                                                   class="btn btn-success">Editer </a>
-                                            </div>
-                                        </div>
+                                <img src="{{ p.coverimg }}" alt="" class="w-100"
+                                     style="max-height: 150px; border-radius: 4px;">
+                                <p class="pt-3">{{ p.content }}</p>
+                                <p style=""><b>Prix: </b>{{ p.price | number_format('0', ' ', ',') }} €</p>
+                                <p><b>Nombre de piéces : </b> {{ p.room }} piéces</p>
+                                <div class="row text-white">
+                                    <div class="col">
+                                        <a href="{{ path('profile_properties_edit',{property: p.id, slug: p.slug}) }}"
+                                           class="btn btn-warning mt-2 form-control">Modifier</a>
+                                    </div>
+                                    <div class="col">
+                                        <a href="{{ path('profile_properties_disable',{property: p.id, slug: p.slug}) }}"
+                                           class="btn btn-danger mt-2 form-control">Supprimer</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    {% endfor %}
+                {% endif %}
             </div>
-        {% endfor %}
+            <div class="col-md">
+                <h2>Mes annonces archivés</h2>
+                <hr>
+                {% if property0 is empty %}
+                    <p class="text-italic">Aucune annonce actuellement archivé.</p>
+                {% else %}
+                    {% for p in property0 %}
+                        <div class="card mb-2">
+                            <div class="card-header">
+                                <div class="card-title border-bottom">
+                                    <h5 class="float-left clear">{{ p.title }}</h5>
+                                    <span class="float-right">Mise en ligne le : {{ p.createdAt | date('d M Y') }}</span>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="card-content mb-2" style="max-height: 50px; overflow: hidden;">
+                                    <img src="{{ p.coverimg }}" alt="" class="float-left"
+                                         style="margin: 7px 8px 0 0; height: 35px; width: 35px; border-radius: 35px;">
+                                    <p class="">{{ p.description }}</p>
+                                </div>
+                                <p class="m-0"><b>Prix: </b>{{ p.price | number_format('0', ' ', ',') }} €</p>
+                                <p class="m-0"><b>Nombre de piéces : </b> {{ p.room }} piéces</p>
+                                <a href="{{ path('profile_properties_active',{property: p.id, slug: p.slug}) }}"
+                                   class="btn btn-success mt-2">Restaurer</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+
     </div>
 {% endblock %}

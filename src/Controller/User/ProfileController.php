@@ -3,7 +3,6 @@
 namespace App\Controller\User;
 
 use App\Entity\Property;
-use App\Entity\User;
 use App\Form\PropertyType;
 use App\Repository\PropertyRepository;
 use App\Repository\UserRepository;
@@ -18,25 +17,20 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Class UserController
  * @package App\Controller
- * @Route("/profile", name="users_")
+ * @Route("/profile", name="profile_")
  */
-class UserController extends AbstractController
+class ProfileController extends AbstractController
 {
     /**
      * @Route("/", name="index")
      * @param UserRepository $repo
-     * @param EntityManagerInterface $em
      * @return Response
      */
-    public function index(UserRepository $repo, EntityManagerInterface $em)
+    public function index(UserRepository $repo)
     {
         $user = $repo->findBy([
             'id' => $this->getUser()
         ]);
-        if (!$user) {
-            return $this->redirectToRoute('users_index');
-        }
-        //$u = $em->createQuery("SELECT count(u.user) From App\Entity\Property u WHERE u.user = ".$this->getUser()." ")->getSingleScalarResult();
         return $this->render('user/index.html.twig', [
             'user' => $user
         ]);
@@ -45,15 +39,16 @@ class UserController extends AbstractController
     /**
      * @route("/mes-annonces", name="properties")
      * @param PropertyRepository $repository
+     *
      * @return Response
      */
     public function showProperties(PropertyRepository $repository)
     {
-        $p = $repository->findBy([
-            'user' => $this->getUser()
-        ]);
+        $p = $repository->findPropertyOnlineByUser($this->getUser());
+        $p0 = $repository->findPropertyOfflineByUser($this->getUser());
         return $this->render('user/properties/index.html.twig', [
-            'property' => $p
+            'property' => $p,
+            'property0' => $p0
         ]);
     }
 
@@ -77,7 +72,7 @@ class UserController extends AbstractController
             throw new AccessDeniedException('Acces refusé');
         }
         if ($property->getSlug() != $slug) {
-            return $this->redirectToRoute('users_properties_edit', [
+            return $this->redirectToRoute('profile_properties_edit', [
                 'property' => $property->getId(),
                 'slug' => $property->getSlug()
             ]);
@@ -92,12 +87,52 @@ class UserController extends AbstractController
             $manager->persist($property);
             $manager->flush();
             $this->addFlash('success', 'Le bien a bien été modifié');
-            return $this->redirectToRoute('users_properties');
+            return $this->redirectToRoute('profile_properties');
         }
         return $this->render('user/properties/edit.html.twig', [
             'property' => $property,
             'form' => $form->createView()
         ]);
 
+    }
+
+    /**
+     * @route("/mes-annonces/{slug<[a-zA-z\-]+>}-{property<\d+>}/disable", name="properties_disable")
+     * @param PropertyRepository $repository
+     * @param string $slug
+     * @param Property $property
+     * @param EntityManagerInterface $em
+     * @return Response
+     */
+    public function disableProperties(PropertyRepository $repository, string $slug, Property $property, EntityManagerInterface $em)
+    {
+        $p = $repository->findOneBy([
+            'id' => $property->getId(),
+            'slug' => $property->getSlug()
+        ]);
+        $property->setOnline(0);
+        $em->flush();
+        $this->addFlash("success", "Votre bien a bien été supprimé");
+        return $this->redirectToRoute('profile_properties', ['property' => $this->getUser()]);
+    }
+
+    /**
+     * @route("/mes-annonces/{slug<[a-zA-z\-]+>}-{property<\d+>}/active", name="properties_active")
+     * @param PropertyRepository $repository
+     * @param string $slug
+     * @param Property $property
+     * @param EntityManagerInterface $em
+     * @return Response
+     */
+    public function activeProperties(PropertyRepository $repository, string $slug, Property $property, EntityManagerInterface $em)
+    {
+        $p = $repository->findOneBy([
+            'id' => $property->getId(),
+            'slug' => $property->getSlug()
+        ]);
+        $property->setOnline(1);
+        $em->flush();
+        $this->addFlash("success", "Votre bien a bien été restauré");
+        return $this->redirectToRoute('profile_properties', ['property' => $this->getUser()]);
     }
 }

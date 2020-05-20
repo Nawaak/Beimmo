@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use LogicException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,7 +21,7 @@ class SecurityController extends AbstractController
             if ($this->getUser()->getRoles() == 'ROLE_ADMIN'){
                 return $this->redirectToRoute('admin_index');
             }
-            return $this->redirectToRoute('index');
+            return $this->redirectToRoute('profile_index');
         }
         // if ($this->getUser()) {
         //     return $this->redirectToRoute('target_path');
@@ -39,6 +40,6 @@ class SecurityController extends AbstractController
      */
     public function logout()
     {
-        throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
+        throw new LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 }

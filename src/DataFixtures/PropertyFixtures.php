@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Property;
 use App\Entity\User;
+use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker;
@@ -25,11 +26,11 @@ class PropertyFixtures extends Fixture
     {
         $faker = Faker\Factory::create('fr_FR');
 
-        $user = new User();
-        $user->setEmail('seveste.brandon@gmail.com')->setPassword($this->encoder->encodePassword($user, 'admin'))->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
-        $manager->persist($user);
+        $user1 = new User();
+        $user1->setEmail('seveste.brandon@gmail.com')->setPassword($this->encoder->encodePassword($user1, 'admin'))->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
+        $manager->persist($user1);
 
-        $users[] = $user;
+        $users[] = $user1;
         for ($i = 0; $i <= 15; $i++) {
             $user = new User();
             $user->setEmail($faker->email)
@@ -46,8 +47,9 @@ class PropertyFixtures extends Fixture
                 ->setContent($faker->text('400'))
                 ->setPrice($faker->randomNumber('6'))
                 ->setRoom($faker->numberBetween('2', '5'))
-                ->setCreatedAt(new \DateTime())
-                ->setUser($faker->randomElement($users));
+                ->setCreatedAt(new DateTime())
+                ->setUser($faker->randomElement($users))
+                ->setReference(mt_rand(10000, 99999));
 
             $manager->persist($property);
         }

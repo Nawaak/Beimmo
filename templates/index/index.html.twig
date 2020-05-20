@@ -59,7 +59,9 @@
                                         {{ p.title }}
                                         <span class="float-right">Mis en ligne le : {{ p.createdAt|date('d M Y') }}
                                             {% if app.user and p.user == app.user %}
-                                                - <a href="#" class="text-right">Editer </a>
+                                                - <a
+                                                    href="{{ path('profile_properties_edit',{property: p.id, slug: p.slug}) }}"
+                                                    class="text-right">Editer </a>
                                             {% endif %}
                                     </span>
                                     </div>

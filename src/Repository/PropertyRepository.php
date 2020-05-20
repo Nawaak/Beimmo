@@ -19,37 +19,14 @@ class PropertyRepository extends ServiceEntityRepository
         parent::__construct($registry, Property::class);
     }
 
-    // /**
-    //  * @return Property[] Returns an array of Property objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Property
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
+    /**
+     * @param SearchData $search
+     * @return int|mixed|string
+     */
     public function findSearch(SearchData $search)
     {
-        $query = $this->createQueryBuilder('t');
+        $query = $this->createQueryBuilder('t')
+            ->where('t.online = 1');
         if (!empty($search->q)) {
             $query = $query
                 ->andWhere('t.title LIKE :q')
@@ -74,6 +51,9 @@ class PropertyRepository extends ServiceEntityRepository
         return $query->getQuery()->getResult();
     }
 
+    /**
+     * @return array|int|mixed|string
+     */
     public function findAll()
     {
         return $this->createQueryBuilder('t')
@@ -83,6 +63,9 @@ class PropertyRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @return int|mixed|string
+     */
     public function findAllDesc()
     {
         return $this->createQueryBuilder('t')
@@ -90,4 +73,35 @@ class PropertyRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param $user
+     * @return int|mixed|string
+     */
+    public function findPropertyOnlineByUser($user)
+    {
+        return $this->createQueryBuilder('t')
+            ->where('t.user = :user')
+            ->setParameter(':user', $user)
+            ->andWhere('t.online = 1')
+            ->orderBy('t.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param $user
+     * @return int|mixed|string
+     */
+    public function findPropertyOfflineByUser($user)
+    {
+        return $this->createQueryBuilder('t')
+            ->where('t.user = :user')
+            ->setParameter(':user', $user)
+            ->andWhere('t.online = 0')
+            ->orderBy('t.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
 }

@@ -1,0 +1,30 @@
+<div class="row">
+    <div class="col">
+        <div class="card mb-3">
+            <div class="card-header">
+                {{ p.title }}
+                <span class="float-right">Mis en ligne le : {{ p.createdAt|date('d M Y') }}</span>
+            </div>
+            <div class="card-body p-0">
+                <div class="row">
+                    <div class="col-md-3 pr-0">
+                        <img src="{{ p.coverimg }}" alt="" class="w-100 h-100">
+                    </div>
+                    <div class="col p-0">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ p.title }}</h5>
+                            <p class="card-text">{{ p.description | slice('0','250') }}.... </p>
+                            <p> Nombre de piéces : {{ p.room }}</p>
+                            <p> Prix : <b>{{ p.price | number_format('0',' ', ',') }} €</b></p>
+                            <a href="#" class="btn btn-info">Voir</a>
+                            <a href="{{ path('profile_properties_edit',{slug: p.slug, property: p.id}) }}"
+                               class="btn btn-success">Editer </a>
+                            <a href="{{ path('profile_properties_disable',{slug: p.slug, property: p.id }) }}"
+                               class="btn btn-success">Supprimer </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -77,6 +77,11 @@ class Property
     private $user;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    private $reference;
+
+    /**
      * @return string
      * @ORM\PrePersist()
      * @ORM\PreUpdate()
@@ -220,6 +225,18 @@ class Property
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getReference(): ?int
+    {
+        return $this->reference;
+    }
+
+    public function setReference(int $reference): self
+    {
+        $this->reference = $reference;
 
         return $this;
     }
